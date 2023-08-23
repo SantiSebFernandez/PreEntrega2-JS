@@ -8,16 +8,17 @@ class Productos {
         this.edicion = info.edicion;
         this.precio = info.precio;
         this.unidades = info.unidades;
+        this.imagen = info.imagen
         this.vendido = false;
     }
-    vender() {
+/*     vender() {
         this.vendido = true;
         this.unidades -= 1;
 
         if (this.unidades == 0) {
             console.log("Sin Stock");
         }
-    }
+    } */
 }
 
 // Productos generados mediante función constructora
@@ -29,6 +30,7 @@ const producto1 = new Productos({
     edicion: "vinilo",
     precio: 10000,
     unidades: 10,
+    imagen: "https://i.scdn.co/image/ab67616d0000b27384b6abc19fb31fb382378bbc"
 })
 
 const producto2 = new Productos({
@@ -39,6 +41,7 @@ const producto2 = new Productos({
     edicion: "vinilo",
     precio: 11000,
     unidades: 5,
+    imagen: "https://i.scdn.co/image/ab67616d0000b273bc9b44e950d5440ff65ea926"
 })
 
 const producto3 = new Productos({
@@ -49,6 +52,7 @@ const producto3 = new Productos({
     edicion: "vinilo",
     precio: 9500,
     unidades: 3,
+    imagen: "https://i.scdn.co/image/ab67616d0000b2739e837fba162c12bb3aaba6a3"
 })
 
 const producto4 = new Productos({
@@ -59,69 +63,50 @@ const producto4 = new Productos({
     edicion: "cd",
     precio: 10500,
     unidades: 4,
+    imagen: "https://lastfm.freetls.fastly.net/i/u/500x500/a566e0ecf37a24a1c9c575835f7ecebf.jpg"
 })
-
 
 //Array de Productos
 const catalogo = [producto1, producto2, producto3, producto4]
 
-//for of para presentar los productos del catálogo
-let mensaje = "Bienvenidos, te presentamos los productos disponibles del catálogo. Inserte el número de producto que desea comprar: \n\n"
-
-for (const productos of catalogo) {
-    let catalogoArtistaAlbum = [productos.id, productos.artista, productos.album];
-    mensaje += catalogoArtistaAlbum.join(" - ") + "\n";
-}
-
-const comprarProducto = prompt(mensaje)
-
-
 const carrito = []
 
 
-// Función vender productos
-function venderProductos() {
-    switch (comprarProducto) {
-        case "1":
-            producto1.vender();
-            return carrito.push(producto1);
-            break;
+//mostrar catalogo a travs del DOM
+catalogo.forEach((item) => {
+    let div = document.createElement("div");
+    div.innerHTML = `
+    <div class="card" style="width: 18rem;">
+    <img src="${item.imagen}" class="card-img-top" alt="...">
+    <div class="card-body">
+    <h5 class="card-title">Artista: ${item.artista}</h5>
+    <h5 class="card-title">Album: ${item.album}</h5>
+    <b>Precio: ${item.precio}</b>
+    <hr>
+    <p id="unidadesCard">Unidades: ${item.unidades}</p>
+    <button id="boton${item.id}">COMPRAR</button>
+    </div>
+    </div>
+    `
+    "<br>"
 
-        case "2":
-            producto2.vender();
-            return carrito.push(producto2);
-            break;
 
-        case "3":
-            producto3.vender();
-            return carrito.push(producto3);
-            break;
+    document.body.append(div)
+    
+    let boton = document.getElementById(`boton${item.id}`)
+    
+    boton.addEventListener("click", () => {
+        carrito.push(item.id)
 
-        case "4":
-            producto4.vender();
-            return carrito.push(producto4);
-            break;
+        let unidades = document.getElementById("unidadesCard")
+        unidades.innerHTML = `${item.unidades - 1}`
+    })
+    
+    
+    div.className = "escala"
+})
 
-        default:
-            break;
-    }
-    alert("El producto fue añadido exitosamente al carrito. ¡Muchas gracias por su compra!")
-
-}
-
-venderProductos()
 
 console.log(catalogo);
 console.log(carrito);
 
-//map del total de precio de carrito + iva
-const totalCarrito = carrito.map((item) => {
-    return item.precio + item.precio * 0.21;
-
-})
-
-console.log(totalCarrito);
-
-carrito.forEach((item)=> {
-    alert ( "El detalle de su compra es" + "\n" + item.id + "- " + item.artista + ": " + item.album + "\n" + "Precio Final + IVA: " + totalCarrito) ; 
-})
